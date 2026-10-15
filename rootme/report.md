@@ -23,6 +23,7 @@ gobuster dir -u  http://<TARGET_IP> -w /usr/share/wordlists/dirb/common.txt
 ![](screenshots/rootme_gobuster.png)
 
 The results shows directories and files like: 
+
 a) /panel (status 301)- a redirect folder. An admin panel is a common entry point for uploading maliciuos files like reverse shell to gain access to the machine.
 
 b) /uploads (status 301)- a redirect likely where files uploaded through /panel page are stored on the server.
@@ -34,6 +35,7 @@ d) /css and /js (status 301) - standard directories containing styling and JavaS
 e) /.htaccess and /.htpasswd (status 403) - "Forbidden", The server knows these files exist but is blocking you from viewing them. They typically contain configuration settings and login credentials.
 
 ![Web](screenshots/rootme_panel.png)
+
 
 
 
