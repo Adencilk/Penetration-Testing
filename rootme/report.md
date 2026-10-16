@@ -36,9 +36,13 @@ e) /.htaccess and /.htpasswd (status 403) - "Forbidden", The server knows these 
 
 ![Web](screenshots/rootme_panel.png)
 
-I managed to upload a shell with extension .phtml from pentestmonkkey after I changed the ip addrress and port in the script.
+I managed to upload a shell with extension .phtml from pentestmonkkey after I changed the Ip addrress and port in the script.
 
 ![Upload](screenshots/rootme_upload.png)
+
+The netcat was able to capture the connection back successfully:
+
+![nc](screenshots/rootme_nc.png)
 
 
 
