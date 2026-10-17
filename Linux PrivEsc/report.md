@@ -21,13 +21,21 @@ Testing is limited to the authorized TryHackMe lab machine.
 ## 4. Tools Used
 
 a) ssh for remote login to the lab
-b) 
+b) mysql
+c)
 
 ## 5. Methodology and Findings
 
 ### 5.1 Initial Access and Connection
 
-Record how the lab machine was accessed and the initial user obtained.
+I ssh the user with the coomand:
+
+```bash
+ ssh user@<TARGET_IP>
+```
+
+and i was able to login as user.
+
 
 ### 5.2 System Enumeration
 
