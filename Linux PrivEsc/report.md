@@ -20,7 +20,8 @@ Testing is limited to the authorized TryHackMe lab machine.
 
 ## 4. Tools Used
 
-To be recorded during the practical exercise.
+a) ssh for remote login to the lab
+b) 
 
 ## 5. Methodology and Findings
 
