@@ -68,7 +68,7 @@ I switched to the root user, using the my new password:
  su root
 ```
 
-![](screenshots/shadow_passwd.png)
+![](screenshots/privsec.png)
 
 ### 5.2 System Enumeration
 
