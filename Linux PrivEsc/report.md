@@ -56,19 +56,19 @@ The /etc/passwd file contains information about user accounts. It is world-reada
  ls -l /etc/passwd
 ```
 
-I generate a new password hash with my password :
+I generated a new password hash with my password :
 
 ```bash
  openssl passwd <my_password>
 ```
-Edit the /etc/passwd file and place the generated password hash between the first and second colon (:) of the root user's row.
+I edited the /etc/passwd file and placed the generated password hash between the first and second colon (:) of the root user's row.
 I switched to the root user, using the my new password:
 
 ```bash
  su root
 ```
 
-![](screenshots/privsec.png)
+![](screenshots/privsec_passwd.png)
 
 ### 5.2 System Enumeration
 
