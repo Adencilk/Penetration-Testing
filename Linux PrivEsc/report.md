@@ -34,7 +34,18 @@ I ssh the user with the coomand:
  ssh user@<TARGET_IP>
 ```
 
-and i was able to login as user.
+and i was able to login as user with low privileges.
+
+### Privilege escalation by weak file permissions i.e Readable /etc/shadow
+
+The /etc/shadow file contains user password hashes and is usually readable only by the root user.
+
+```bash
+ ls -l /etc/shadow
+```
+I edited the /etc/shadow file and replaced the original root user's password hash with the one I just generated, and I managed to successfully escalate my privileges.
+
+![](screenshots/privsec_shadow.png)
 
 
 ### 5.2 System Enumeration
