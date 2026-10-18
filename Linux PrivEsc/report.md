@@ -70,6 +70,10 @@ I switched to the root user, using the my new password:
 
 ![](screenshots/privsec_passwd.png)
 
+### Privilege escalation by shell escape sequences
+
+
+
 ### 5.2 System Enumeration
 
 Record commands executed, their purpose, and relevant output.
