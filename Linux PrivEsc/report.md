@@ -28,7 +28,7 @@ c)
 
 ### 5.1 Initial Access and Connection
 
-I ssh the user with the coomand:
+I ssh the user with the command:
 
 ```bash
  ssh user@<TARGET_IP>
@@ -47,6 +47,28 @@ I edited the /etc/shadow file and replaced the original root user's password has
 
 ![](screenshots/privsec_shadow.png)
 
+
+### Privilege escalation by weak file permissions i.e Readable /etc/passwd
+
+The /etc/passwd file contains information about user accounts. It is world-readable, but usually only writable by the root user. Historically, the /etc/passwd file contained user password hashes, and some versions of Linux will still allow password hashes to be stored there.
+
+```bash
+ ls -l /etc/passwd
+```
+
+I generate a new password hash with my password :
+
+```bash
+ openssl passwd <my_password>
+```
+Edit the /etc/passwd file and place the generated password hash between the first and second colon (:) of the root user's row.
+I switched to the root user, using the my new password:
+
+```bash
+ su root
+```
+
+![](screenshots/shadow_passwd.png)
 
 ### 5.2 System Enumeration
 
