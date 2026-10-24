@@ -1,21 +1,20 @@
 # TryHackMe: Linux Agency — Write-up & Lab Portfolio
 
-![TryHackMe](https://shields.io)
-![Difficulty](https://shields.io)
-![Category](https://shields.io)
+Room : Linux Agency
+Category : PenTest
 
 A comprehensive walkthrough and documentation of the **Linux Agency** room on TryHackMe. This lab uses a *Hitman* theme to test deep Linux fundamentals, command-line proficiency, multi-language scripting, and advanced privilege escalation methodologies by chaining through 30 mission accounts to ultimately achieve root.
 
 ---
 
-## 🎯 Room Objectives
+##  Room Objectives
 * **Initial Access:** Infiltrate the system as `agent47` using established SSH credentials.
 * **Linux Fundamentals:** Traverse through 30 user accounts (`mission1` to `mission30`), where each flag retrieved serves as the SSH/su password for the subsequent user account.
 * **Privilege Escalation:** Break out of restricted environments and exploit systemic misconfigurations to elevate privileges from the final mission user to `root`.
 
 ---
 
-## 🛠️ Skills & Technologies Demonstrated
+##  Skills & Technologies Demonstrated
 
 | Category | Tools & Techniques Used |
 | :--- | :--- |
@@ -27,7 +26,7 @@ A comprehensive walkthrough and documentation of the **Linux Agency** room on Tr
 
 ---
 
-## 🏁 Operational Walkthrough
+##  Operational Walkthrough
 
 ### Part 1: Initial Access & Banner Reconnaissance
 * **Target Credentials:** `agent47` : `640509040147`
@@ -49,7 +48,7 @@ After pivoting to the final tier of mission users, analyzed systemic misconfigur
 
 ---
 
-## 🔑 Key Takeaways
+##  Key Takeaways
 1. **Sanitize Environment Variables:** Misconfigured user environments (like custom application configurations dependent on basic inputs) introduce serious injection entry-points.
 2. **Enforce Least Privilege (RBAC):** Group memberships like `docker` or loosely managed `sudo` binary permissions can completely undo rigorous network access controls.
 3. **Internal Forensic Awareness:** Attackers often pivot natively using standard built-in tools. Monitoring file modifications and checking hidden user artifacts is critical for detecting lateral movement.
