@@ -1,6 +1,7 @@
 # TryHackMe: Linux Agency — Write-up & Lab Portfolio
 
 Room : Linux Agency
+
 Category : PenTest
 
 A comprehensive walkthrough and documentation of the **Linux Agency** room on TryHackMe. This lab uses a *Hitman* theme to test deep Linux fundamentals, command-line proficiency, multi-language scripting, and advanced privilege escalation methodologies by chaining through 30 mission accounts to ultimately achieve root.
