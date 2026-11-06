@@ -4,7 +4,7 @@
 
 This repository documents my penetration testing assessment of the **RootMe** room on TryHackMe. The objective was to perform reconnaisance, enumerate services, gain initial access, escalate privileges, and document the complete methodology.
 
-## Objectves
+## Objectives
 
  - Perform reconnaissance
  - Enumerate the target
