@@ -141,7 +141,7 @@ The SUID binary executes the following commands without specifying their full pa
    Ifconfig  
 
 ## Security Impact
-Because the binary searches for these commands using the user's PATH,an attacker can place a maalicious executable earlier in the PATH and have it executed with root privileges.
+Because the binary searches for these commands using the user's PATH,an attacker can place a malicious executable earlier in the PATH and have it executed with root privileges.
 This indicates a PATH hijacking vulnerability.
 ## Exploitations
 **Commands**
