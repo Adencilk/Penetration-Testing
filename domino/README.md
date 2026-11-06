@@ -19,11 +19,6 @@ Domino is a TryHackMe Penetration Testing lab focused on reconnaissance, service
 - Escalate privileges
 - Obtain proof of compromise
 
-## Key Findings
--
--
--
-
 ## Attack path
 
 1. Reconnaisance
